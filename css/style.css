@@ -1,0 +1,11 @@
+body {
+	margin:0;
+	background:#2a2c3b;
+}
+
+#knob {
+	display:block;
+	width:229px;
+	height:229px;
+	margin:200px auto 0;
+}
