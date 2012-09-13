@@ -24,6 +24,7 @@ var Knob = function (canvas, sprite) {
 
   this.value = 0.0;
   this.capturing = false;
+  this.prevMousePosY = 0;
 
   var bindEvents = function (element, events, callback) {
     for (var i = 0; i < events.length; i++) {
@@ -54,11 +55,9 @@ Knob.prototype.onMouseMove = function (e) {
   e.preventDefault();
 
   if (this.capturing) {
-    var movementY = e.movementY ||
-                    e.mozMovementY ||
-                    e.webkitMovementY;
+    var deltaY = e.clientY - this.prevMousePosY;
 
-    if (movementY > 0) {
+    if (deltaY > 0) {
       this.value -= 0.01;
     } else {
       this.value += 0.01;
@@ -73,6 +72,8 @@ Knob.prototype.onMouseMove = function (e) {
     this.paint();
     this.onChange(this.value);
   }
+
+  this.prevMousePosY = e.clientY;
 };
 
 Knob.prototype.setValue = function (value) {
