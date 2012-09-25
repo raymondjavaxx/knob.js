@@ -51,24 +51,35 @@ var Knob = function (canvas, sprite) {
   this.onChange = function (value) { };
 };
 
+Knob.prototype.calculateValue = function (e) {
+  var mousePosDelta = e.clientY - this.prevMousePosY;
+
+  var factor = 0.01;
+
+  // Pressing [Ctrl] should increase precision
+  if (e.ctrlKey) {
+    factor = 0.001;
+  }
+
+  if (mousePosDelta > 0) {
+    factor = factor * -1.0;
+  }
+
+  this.value += factor;
+
+  // Truncate value if necessary
+  if (this.value > 1.0) {
+    this.value = 1.0;
+  } else if (this.value < 0.0) {
+    this.value = 0.0;
+  }
+};
+
 Knob.prototype.onMouseMove = function (e) {
   e.preventDefault();
 
   if (this.capturing) {
-    var deltaY = e.clientY - this.prevMousePosY;
-
-    if (deltaY > 0) {
-      this.value -= 0.01;
-    } else {
-      this.value += 0.01;
-    }
-
-    if (this.value > 1.0) {
-      this.value = 1.0;
-    } else if (this.value < 0.0) {
-      this.value = 0.0;
-    }
-
+    this.calculateValue(e);
     this.paint();
     this.onChange(this.value);
   }
